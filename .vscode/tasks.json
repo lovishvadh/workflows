@@ -1,0 +1,125 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Create PR",
+      "type": "shell",
+      "command": "./scripts/workflows/create-pr.sh",
+      "group": "none",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Create PR (draft, skip checks)",
+      "type": "shell",
+      "command": "./scripts/workflows/create-pr.sh --skip-checks --draft",
+      "group": "none",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Create PR to develop",
+      "type": "shell",
+      "command": "./scripts/workflows/create-pr.sh --base develop",
+      "group": "none",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Pre-PR check",
+      "type": "shell",
+      "command": "./scripts/workflows/pre-pr-check.sh",
+      "group": "test",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": ["$tsc", "$eslint-stylish"]
+    },
+    {
+      "label": "Full check (lint, test, audit, React memory)",
+      "type": "shell",
+      "command": "./scripts/workflows/full-check.sh",
+      "group": "test",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Code review (lint + repo rules)",
+      "type": "shell",
+      "command": "./scripts/workflows/code-review.sh",
+      "group": "none",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": ["$eslint-stylish"]
+    },
+    {
+      "label": "Security audit",
+      "type": "shell",
+      "command": "./scripts/workflows/security-audit.sh",
+      "group": "none",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Vulnerability scan",
+      "type": "shell",
+      "command": "./scripts/workflows/vulnerability-scan.sh",
+      "group": "none",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Vulnerability scan and fix",
+      "type": "shell",
+      "command": "./scripts/workflows/vulnerability-scan-and-fix.sh",
+      "group": "none",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "React memory-leak check",
+      "type": "shell",
+      "command": "node ./scripts/workflows/react-memory-check.js src",
+      "group": "none",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Sync branch with main",
+      "type": "shell",
+      "command": "./scripts/workflows/sync-branch.sh",
+      "group": "none",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "lint",
+      "type": "shell",
+      "command": "npm run lint",
+      "group": { "kind": "test", "isDefault": false },
+      "presentation": { "reveal": "silent", "panel": "shared" },
+      "problemMatcher": ["$eslint-stylish"]
+    },
+    {
+      "label": "test",
+      "type": "shell",
+      "command": "npm test",
+      "group": { "kind": "test", "isDefault": true },
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": ["$tsc", "$eslint-stylish"]
+    },
+    {
+      "label": "build",
+      "type": "shell",
+      "command": "npm run build",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": ["$tsc"]
+    },
+    {
+      "label": "pre-commit check",
+      "type": "shell",
+      "command": "npm run lint && npm test",
+      "group": "test",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    }
+  ]
+}
