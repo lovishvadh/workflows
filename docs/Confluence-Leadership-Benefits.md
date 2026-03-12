@@ -11,7 +11,7 @@
 We have introduced a **standard VS Code + GitHub Copilot workflow** that every team can reuse. It gives developers:
 
 - **One-command tasks** in VS Code (Create PR, Pre-PR check, security audit, vulnerability scan, code review, React memory checks, etc.).
-- **16 AI slash commands** in Copilot Chat (e.g. `/code-review`, `/security-review`, `/create-pr`, `/tests`, `/explain`, `/commit`) that find issues, suggest or apply fixes, and remind developers to verify with lint/test/build.
+- **17 AI slash commands** in Copilot Chat (e.g. `/code-review`, `/security-review`, `/create-pr`, `/tests`, `/ticket-to-tests`, `/explain`, `/commit`) that find issues, suggest or apply fixes, and remind developers to verify with lint/test/build.
 
 All of this is **repo-configurable** (per-repo rules for AI code review, commit style, and forbidden patterns) and **copyable** into any repo via a single script.
 
@@ -29,6 +29,7 @@ All of this is **repo-configurable** (per-repo rules for AI code review, commit 
 | **Quality & consistency** | Lint/test/audit pass rate before PR; adherence to commit and review rules | **Fewer “fix CI” rounds**; **consistent commit history** and review standards across repos |
 | **Onboarding & context** | Time for a new joiner to understand a module or fix a failing test | **~30–50% faster** for “what does this do?” and “why is this failing?” using `/explain` and `/debug` |
 | **Test coverage & docs** | New tests and docs generated per sprint; time to add tests/docs | **More tests and docs with less effort**; **~25–40% time savings** when using `/tests` and `/docs` |
+| **Ticket → test cases & QA** | Time to derive QA test cases from user stories; time to write unit/e2e/integration tests from cases | **`/ticket-to-tests`** produces a full test case list (steps, expected, priority, edge/negative) for QA validation; **~40–60% faster** test case authoring and **traceable** unit/e2e/integration test generation from the same cases |
 | **Release & changelog** | Time to draft release notes or changelog from commits | **~60–80% faster** with `/changelog` and structured commits |
 
 The numbers above are **estimates and targets** based on automating manual steps, reducing context switching, and using AI for first drafts and checks. Actual results depend on adoption, repo maturity, and current baseline.
@@ -96,6 +97,7 @@ The numbers above are **estimates and targets** based on automating manual steps
 **What we added**
 
 - **`/tests`**: Generate unit/integration tests for the current file or selection, matching existing test style and runner; remind to run the **test** task.
+- **`/ticket-to-tests`**: Paste a user story or ticket → get a **full QA test case list** (ID, steps, expected result, priority, edge/negative cases) for QA to validate; optionally ask to **generate unit, e2e, and/or integration tests** from those cases, with tests mapped to test case IDs for traceability.
 - **`/docs`**: Generate or update JSDoc/TSDoc or README for the current file/module.
 - **`/refactor`**: Align selected code with patterns used elsewhere; suggest edits; verify with Pre-PR check.
 - **`/debug`**: User pastes an error; AI suggests cause, location, and fix; remind to re-run the failing command.
@@ -103,6 +105,8 @@ The numbers above are **estimates and targets** based on automating manual steps
 **Quantifiable impact**
 
 - **Test coverage and velocity:** Adding tests is often deferred because it’s tedious. With `/tests` and a single “run test” step, teams can add **more tests with less effort**. A reasonable target is **~25–40% time savings** on “write tests for this” tasks and **higher coverage** over time.
+
+- **Ticket → test cases and QA alignment:** Manually turning user stories into test cases and then into automation is slow and often inconsistent. **`/ticket-to-tests`** produces a **complete, step-by-step test case list** (happy path, edge, negative) so QAs can validate the scenario, then generates **unit, e2e, and integration tests** that map back to those cases. That can **cut test case authoring time by ~40–60%** and **reduce gaps** between requirements and test coverage; traceability (test case ID → test code) improves reporting and regression clarity.
 
 - **Documentation:** `/docs` produces first drafts of API docs and README sections. That can **cut doc-writing time by ~30–50%** for the covered areas and improve **onboarding and discoverability**.
 
@@ -177,7 +181,7 @@ Assumptions for a **10-person team**:
 ## 8. What’s included (for reference)
 
 - **VS Code:** Shared settings, recommended extensions (Copilot, ESLint, Prettier, GitLens, EditorConfig), tasks (Create PR, Pre-PR check, Full check, Code review, Security audit, Vulnerability scan and fix, React memory-leak check, Sync branch, lint/test/build), and launch configs.
-- **GitHub:** `copilot-instructions.md`, `code-review-rules.md`, `code-review-instructions.md` (per-repo AI code review), and **16 Copilot slash commands** (e.g. `/code-review`, `/security-review`, `/create-pr`, `/tests`, `/explain`, `/commit`, `/refactor`, `/docs`, `/debug`, `/changelog`, `/api-review`, `/upgrade-dep`, `/suggest-task`, `/pr-ready`, `/vulnerability-scan`, `/react-memory`).
+- **GitHub:** `copilot-instructions.md`, `code-review-rules.md`, `code-review-instructions.md` (per-repo AI code review), and **17 Copilot slash commands** (e.g. `/code-review`, `/security-review`, `/create-pr`, `/tests`, `/ticket-to-tests`, `/explain`, `/commit`, `/refactor`, `/docs`, `/debug`, `/changelog`, `/api-review`, `/upgrade-dep`, `/suggest-task`, `/pr-ready`, `/vulnerability-scan`, `/react-memory`).
 - **Scripts:** Create PR, Pre-PR check, Full check, Code review (lint + repo rules), Security audit, Vulnerability scan, Vulnerability scan and fix, React memory-leak check, Sync branch. All runnable as **one command** from VS Code (Run Task).
 - **Rollout:** One script copies the workflow into any repo; teams then tailor `.github/*` and `.vscode/tasks.json` for that repo.
 
@@ -210,6 +214,7 @@ The VS Code + Copilot workflows initiative delivers:
 - **Stronger, consistent code review** (automated rules + AI review with per-repo instructions).
 - **Earlier, cheaper security and vulnerability handling** (scan and fix with verification).
 - **More tests and docs, faster debugging and refactoring** (AI commands + verification).
+- **User stories → QA test cases and test code** (`/ticket-to-tests`: full test case list for QA validation, then unit/e2e/integration tests mapped to cases for traceability).
 - **Faster onboarding and planning** (explain, suggest-task, commit, changelog).
 - **Less friction and more consistency** (shared config, one-command tasks, same workflow across repos).
 

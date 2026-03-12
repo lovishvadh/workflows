@@ -61,8 +61,9 @@ These use **Copilot Chat** to run the task with AI. In the Chat panel, type **`/
 | **`/api-review`** | Reviews new or changed API (signatures, routes, request/response) for consistency with the codebase and best practices; suggests improvements; verify with **Pre-PR check**. |
 | **`/upgrade-dep`** | For a given dependency (e.g. `react@19`): lists breaking changes and affected files, suggests code/config updates; reminds you to run tests and typecheck. |
 | **`/suggest-task`** | From a ticket description or pasted text: outputs a task list (steps, order, files to touch), optional sub-tasks, and risks/dependencies. |
+| **`/ticket-to-tests`** | **User story/ticket → QA test cases then test code.** Paste a user story or ticket; get a full list of test cases (ID, steps, expected result, priority, edge/negative) for QA to validate. Optionally ask to "generate unit tests", "generate e2e", or "all test types" and get unit, e2e, and/or integration tests that match the repo and map to the test case IDs. |
 
-Commands that change code follow **find → fix → verify**: find issues, propose or apply fixes, then have you run **Pre-PR check** or **Full check** and help fix any breakage so **everything still works**. Others (e.g. **`/explain`**, **`/commit`**, **`/changelog`**, **`/suggest-task`**) only explain or generate. Prompt files live in **`.github/prompts/`**; **copy-to-repo** copies all of them into the target repo.
+Commands that change code follow **find → fix → verify**: find issues, propose or apply fixes, then have you run **Pre-PR check** or **Full check** and help fix any breakage so **everything still works**. Others (e.g. **`/explain`**, **`/commit`**, **`/changelog`**, **`/suggest-task`**, **`/ticket-to-tests`** for the test-case list) explain or generate; **`/ticket-to-tests`** can also generate unit/e2e/integration test code when you ask. Prompt files live in **`.github/prompts/`**; **copy-to-repo** copies all of them into the target repo.
 
 ### AI code review rules (per repo)
 
