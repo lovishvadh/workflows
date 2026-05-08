@@ -17,6 +17,11 @@ Reusable **VS Code and GitHub Copilot** setup for development teams. Use this in
 | **`.github/prompts/*.prompt.md`** | **Copilot Chat slash commands** – type `/code-review`, `/security-review`, etc. in Copilot Chat to run AI tasks |
 | **`scripts/workflows/*.sh`** | Scripts for Create PR, Pre-PR check, Security audit, Code review, Sync branch, Full check |
 | **`scripts/workflows/react-memory-check.js`** | React memory-leak pattern checker (useEffect cleanup, subscriptions, timers) |
+| **`scripts/workflows/figma-sync.mjs`** | **Figma REST API** — fetch file/nodes to `design/figma/`; optional React stub (no Figma MCP required) |
+| **`docs/style-guidelines.md`** | **Design system** — tokens, typography, Figma links, component map (for humans + Copilot) |
+| **`docs/Figma-API-Workflow.md`** | How to get a Figma token, run `figma-sync.mjs`, and use **`/figma-component`** |
+| **`docs/Integrated-Workflow.md`** | **Glue doc** — story → Figma + style → tests → review → PR (how tasks + prompts connect) |
+| **`.env.example`** | Placeholder for `FIGMA_ACCESS_TOKEN` and `FIGMA_FILE_KEY` (copy to `.env`, gitignored) |
 
 ## Commands you can run in VS Code
 
@@ -35,6 +40,8 @@ Use **Terminal → Run Task** (or `Cmd+Shift+P` → “Tasks: Run Task”) and p
 | **Vulnerability scan and fix** | Runs `npm audit fix`, then **Pre-PR check** (lint, test, build, audit) so fixes don’t break anything. |
 | **React memory-leak check** | Scans for addEventListener/subscribe/setInterval/setTimeout without cleanup in `useEffect`. |
 | **Sync branch with main** | Fetch and rebase current branch onto `main`/`master`. |
+| **Figma: fetch full file** | Fetches the Figma file via API → `design/figma/latest.json`. Set `FIGMA_ACCESS_TOKEN` and `FIGMA_FILE_KEY` in the environment (see **docs/Figma-API-Workflow.md**). |
+| **Figma: fetch nodes** | Same, but set `FIGMA_NODE_IDS` (e.g. `12:34,56:78`) for specific components/frames. |
 | **lint** / **test** / **build** / **pre-commit check** | Standard project scripts. |
 
 All of these are **one command** in VS Code.
@@ -62,6 +69,7 @@ These use **Copilot Chat** to run the task with AI. In the Chat panel, type **`/
 | **`/upgrade-dep`** | For a given dependency (e.g. `react@19`): lists breaking changes and affected files, suggests code/config updates; reminds you to run tests and typecheck. |
 | **`/suggest-task`** | From a ticket description or pasted text: outputs a task list (steps, order, files to touch), optional sub-tasks, and risks/dependencies. |
 | **`/ticket-to-tests`** | **User story/ticket → QA test cases then test code.** Paste a user story or ticket; get a full list of test cases (ID, steps, expected result, priority, edge/negative) for QA to validate. Optionally ask to "generate unit tests", "generate e2e", or "all test types" and get unit, e2e, and/or integration tests that match the repo and map to the test case IDs. |
+| **`/figma-component`** | **Figma export → UI in repo.** After `figma-sync.mjs` writes `design/figma/latest.json`, use this to implement or refine components per **`docs/style-guidelines.md`** (uses Figma REST API data, not MCP). |
 
 Commands that change code follow **find → fix → verify**: find issues, propose or apply fixes, then have you run **Pre-PR check** or **Full check** and help fix any breakage so **everything still works**. Others (e.g. **`/explain`**, **`/commit`**, **`/changelog`**, **`/suggest-task`**, **`/ticket-to-tests`** for the test-case list) explain or generate; **`/ticket-to-tests`** can also generate unit/e2e/integration test code when you ask. Prompt files live in **`.github/prompts/`**; **copy-to-repo** copies all of them into the target repo.
 
@@ -75,6 +83,31 @@ The **`/code-review`** Copilot command uses **three** sources of rules; the firs
 
 So: **yes, there is a Copilot command for AI code review (`/code-review`)**, and you can provide **separate rules per repo** by editing **`.github/code-review-instructions.md`** in that repo.
 
+## Figma (REST API — no MCP)
+
+If you don’t have the Figma MCP, you can still pull design data with the **Figma REST API**:
+
+1. Create a [Figma personal access token](https://www.figma.com/developers/api#access-tokens) and add it to `.env` as `FIGMA_ACCESS_TOKEN` (see **`.env.example`**).
+2. Run **`node scripts/workflows/figma-sync.mjs fetch <file_key>`** or the **Figma: fetch full file** / **Figma: fetch nodes** tasks.
+3. Exports land in **`design/figma/latest.json`**.
+4. Edit **`docs/style-guidelines.md`** with your tokens, type scale, and links to Figma files.
+5. In Copilot Chat, run **`/figma-component`** (or ask manually) to build or refine components using the export + style guidelines.
+6. Optional: **`node scripts/workflows/figma-sync.mjs stub design/figma/latest.json MyComponent src/components/MyComponent.tsx`** for a minimal React stub.
+
+Details: **[docs/Figma-API-Workflow.md](docs/Figma-API-Workflow.md)**.
+
+## How it fits together
+
+Tasks, prompts, and docs are one pipeline — not separate toys:
+
+1. **`/ticket-to-tests`** → structured cases (and optional generated tests).
+2. **Figma fetch** → **`design/figma/latest.json`** + **`docs/style-guidelines.md`** → **`/figma-component`** → real UI files.
+3. **Run Task:** **test** / **lint** / **build** → green locally.
+4. **`/code-review`** + **Code review** task (**`forbid:`** rules) → governance loop until **Full check** passes.
+5. **`/create-pr`** → **`.github/PR_DESCRIPTION.md`** → **Create PR** task.
+
+Full narrative, diagram, and file roles: **[docs/Integrated-Workflow.md](docs/Integrated-Workflow.md)**.
+
 ## How to use in a repo
 
 ### Option A: Copy into an existing repo
@@ -85,7 +118,7 @@ From this repo’s root, run:
 ./scripts/copy-to-repo.sh /path/to/your/repo
 ```
 
-That copies `.vscode/`, `.editorconfig/`, `.github/` (copilot-instructions, code-review-rules, code-review-instructions, and **prompts**), and **`scripts/workflows/`** into the target repo. Tasks and Copilot slash commands work in VS Code with Copilot.
+That copies `.vscode/`, `.editorconfig/`, `.github/` (copilot-instructions, code-review-rules, code-review-instructions, and **prompts**), **`scripts/workflows/`**, **`docs/`** (style guidelines, Figma workflow, **integrated workflow**), **`.env.example`**, and **`design/figma/`** placeholder into the target repo.
 
 Then:
 

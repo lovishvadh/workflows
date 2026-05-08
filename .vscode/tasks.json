@@ -120,6 +120,22 @@
       "group": "test",
       "presentation": { "reveal": "always", "panel": "shared" },
       "problemMatcher": []
+    },
+    {
+      "label": "Figma: fetch full file",
+      "type": "shell",
+      "command": "if [ -z \"${env:FIGMA_ACCESS_TOKEN}\" ] || [ -z \"${env:FIGMA_FILE_KEY}\" ]; then echo 'Set FIGMA_ACCESS_TOKEN and FIGMA_FILE_KEY (see docs/Figma-API-Workflow.md and .env.example)'; exit 1; fi && node ./scripts/workflows/figma-sync.mjs fetch \"${env:FIGMA_FILE_KEY}\"",
+      "group": "none",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Figma: fetch nodes (set FIGMA_NODE_IDS)",
+      "type": "shell",
+      "command": "if [ -z \"${env:FIGMA_ACCESS_TOKEN}\" ] || [ -z \"${env:FIGMA_FILE_KEY}\" ] || [ -z \"${env:FIGMA_NODE_IDS}\" ]; then echo 'Set FIGMA_ACCESS_TOKEN, FIGMA_FILE_KEY, and FIGMA_NODE_IDS (comma-separated, e.g. 12:34,56:78)'; exit 1; fi && node ./scripts/workflows/figma-sync.mjs fetch \"${env:FIGMA_FILE_KEY}\" \"${env:FIGMA_NODE_IDS}\"",
+      "group": "none",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
     }
   ]
 }
